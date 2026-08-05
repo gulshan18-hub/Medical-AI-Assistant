@@ -1,0 +1,24 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  build-test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install backend deps
+        run: pip install -r backend/requirements.txt
+      - name: Lint
+        run: python -m py_compile backend/app/main.py backend/app/api/router.py backend/app/api/routes/health.py backend/app/api/routes/auth.py backend/app/api/routes/chat.py backend/app/api/routes/documents.py backend/app/api/routes/reports.py backend/app/services/chat.py
+      - name: Build frontend
+        run: |
+          cd frontend
+          npm install
+          npm run build
